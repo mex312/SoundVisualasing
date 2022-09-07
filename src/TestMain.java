@@ -1,6 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import javax.sound.sampled.*;
 
 public class TestMain {
@@ -9,6 +10,7 @@ public class TestMain {
     public static TargetDataLine microphoneLine;
 
     public static final AudioFormat FORMAT = new AudioFormat(44100, 16, 2, true, true);
+    //public static final AudioFormat FORMAT = new AudioFormat(8000, 16, 2, true, true);
     public static void main(String[] args) throws UnsupportedEncodingException {
         DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, TestMain.FORMAT);
         Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
@@ -24,8 +26,8 @@ public class TestMain {
             }
         }
         try {
-            Mixer mixerS = AudioSystem.getMixer(mixerInfos[1]); //Здесь пишем номер устройства на которое будем посылать звук
-            microphoneLine = AudioSystem.getTargetDataLine(FORMAT, mixerInfos[6]);
+            Mixer mixerS = AudioSystem.getMixer(mixerInfos[0]); //Здесь пишем номер устройства на которое будем посылать звук
+            microphoneLine = AudioSystem.getTargetDataLine(FORMAT, mixerInfos[3]);
             microphoneLine.open(TestMain.FORMAT);
             microphoneLine.start();
             Thread captureThread = new Thread(new CaptureThread());
