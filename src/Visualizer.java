@@ -6,8 +6,8 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class Visualizer extends JComponent{
-    private double[] wave;
-    private final int fourieSampleSize;
+    private final double[] wave;
+    private final int fourierSampleSize;
     private final Timer fourierDrawer;
     private final TargetDataLine targetDataLine;
 
@@ -16,7 +16,7 @@ public class Visualizer extends JComponent{
 
         for(int i = 0; i < arr.length; i += byteRate) {
             if(byteRate == 2){
-                out[i] = (arr[i]) << 8 | arr[i + 1];
+                out[i / 2] = (arr[i]) << 8 | arr[i + 1];
             } else {
                 out[i] = arr[i];
             }
@@ -29,36 +29,32 @@ public class Visualizer extends JComponent{
         targetDataLine = AudioSystem.getTargetDataLine(Main.FORMAT, mixerInfo);
         //System.out.println(MixerInfoItem.asString(mixerInfo));
         targetDataLine.open(Main.FORMAT);
-        targetDataLine.start();
 
-        fourieSampleSize = (int)Main.FORMAT.getSampleRate() / frameRate;
+        fourierSampleSize = (int)Main.FORMAT.getSampleRate() / frameRate;
 
-        wave = new double[fourieSampleSize];
+        wave = new double[fourierSampleSize];
 
-        FFT fft = new FFT(fourieSampleSize, -1);
+        FFT fft = new FFT(fourierSampleSize, -1);
         //FFT ifft = new FFT(fourieSampleSize, 1);
-        fourierDrawer = new Timer((int)(1000.0 / ((double)Main.FORMAT.getFrameRate() / (double)fourieSampleSize / (double)(Main.FORMAT.getSampleSizeInBits() / 8))) - 2, e -> {
-            byte[] input = new byte[fourieSampleSize * Main.FORMAT.getSampleSizeInBits()/8];
+        fourierDrawer = new Timer((int)(1000.0 / ((double)Main.FORMAT.getFrameRate() / (double)fourierSampleSize / (double)(Main.FORMAT.getSampleSizeInBits() / 8))) - 2, e -> {
+            byte[] input = new byte[fourierSampleSize * Main.FORMAT.getSampleSizeInBits()/8];
             targetDataLine.read(input, 0, input.length);
-            double[] floatInput = bytesToDoubles(input, Main.FORMAT.getSampleSizeInBits()/8);
-            double[] result = new double[floatInput.length * 2];
-            System.arraycopy(floatInput, 0, result, 0, floatInput.length);
-            //double[] result = getSinWave();
+
+            double[] result = bytesToDoubles(input, Main.FORMAT.getSampleSizeInBits()/8);
 
             //System.out.println(Arrays.toString(input));
             fft.transform(result);
-            //ifft.transform(result);
 
-            for(int i = 0; i < fourieSampleSize; i++){
-                wave[i] = result[i] / fourieSampleSize;
-                //wave[i] = Math.abs(result[i]);
+            for(int i = 0; i < fourierSampleSize; i++){
+                wave[i] = Math.abs(result[i]) / fourierSampleSize;
             }
 
             //System.out.println(Arrays.toString(wave));
 
             repaint();
         });
-        fourierDrawer.start();
+
+        setPreferredSize(new Dimension(800, 600));
     }
 
     public void stop(){
@@ -66,15 +62,20 @@ public class Visualizer extends JComponent{
         targetDataLine.close();
     }
 
+    public void start() {
+        targetDataLine.start();
+        fourierDrawer.start();
+    }
+
     public void paint(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
         g2.clearRect(0, 0, getWidth(), getHeight());
 
-        for(int i = 0; i < fourieSampleSize; i++) {
-            double progress = (double)(i) / ((double)fourieSampleSize);
+        for(int i = 0; i < fourierSampleSize; i++) {
+            double progress = (double)(i) / ((double)fourierSampleSize);
             int x = (int)(progress * getWidth());
-            int nextX = (int)((double)(i + 1) / (double)fourieSampleSize * WIDTH);
+            int nextX = (int)((double)(i + 1) / (double)fourierSampleSize * getWidth());
 
             Color color = Color.getHSBColor((float)(progress), 1, 1);
 

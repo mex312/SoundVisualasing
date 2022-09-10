@@ -2,8 +2,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -19,31 +17,19 @@ public class Main {
     public static void runVisualizer(Mixer.Info mixerInfo, int frameRate){
         try {
             visualizer = new Visualizer(mixerInfo, frameRate);
-            visualizer.setPreferredSize(new Dimension(800, 600));
-            visualizer.setSize(new Dimension(800, 600));
 
             frame = new JFrame();
             frame.add(visualizer);
-            frame.setResizable(true);
-            frame.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    super.componentResized(e);
-                    visualizer.setPreferredSize(frame.getContentPane().getSize());
-                    visualizer.setSize(frame.getContentPane().getSize());
-                    visualizer.setBounds(0, 0, frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
-                    frame.pack();
-                }
-            });
             frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    super.windowClosed(e);
                     Main.stopVisualizer();
                 }
             });
             frame.pack();
             frame.setVisible(true);
+
+            visualizer.start();
 
             launcher.onVisualizerStart();
             isVisualizerRunning = true;
