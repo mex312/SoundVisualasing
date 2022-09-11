@@ -6,7 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Main {
-    public static final AudioFormat FORMAT = new AudioFormat(8192, 16, 1, true, true);
+    public static final AudioFormat FORMAT = new AudioFormat(8192 * 2, 16, 1, true, true);
 
     public static boolean isVisualizerRunning = false;
 
