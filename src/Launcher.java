@@ -7,16 +7,22 @@ public class Launcher extends JFrame {
     private JButton launchButton;
     private JComboBox fpsComboBox;
     private JPanel rootPanel;
+    private JComboBox viewTypeComboBox;
+    private JRadioButton mirrorRadioButton;
 
     public void onVisualizerStart(){
         inputDeviceComboBox.setEnabled(false);
         fpsComboBox.setEnabled(false);
+        viewTypeComboBox.setEnabled(false);
+        mirrorRadioButton.setEnabled(false);
         launchButton.setText("Остановить визуализатор");
     }
 
     public void onVisualizerStop(){
         inputDeviceComboBox.setEnabled(true);
         fpsComboBox.setEnabled(true);
+        viewTypeComboBox.setEnabled(true);
+        mirrorRadioButton.setEnabled(true);
         launchButton.setText("Запустить визуализатор");
     }
 
@@ -29,6 +35,12 @@ public class Launcher extends JFrame {
         fpsComboBox.addItem(16);
         fpsComboBox.addItem(32);
         fpsComboBox.addItem(64);
+
+        ComboBoxOption freqsOpt = new ComboBoxOption("По частотам", "frequencies");
+        ComboBoxOption notesOpt = new ComboBoxOption("По Нотам", "notes");
+
+        viewTypeComboBox.addItem(freqsOpt);
+        viewTypeComboBox.addItem(notesOpt);
 
         Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
         for(Mixer.Info mixerInfo : mixerInfos) {
@@ -43,7 +55,8 @@ public class Launcher extends JFrame {
             if(!Main.isVisualizerRunning) {
                 Mixer.Info mixerInfo = ((MixerInfoItem)inputDeviceComboBox.getSelectedItem()).mixerInfo;
                 int frameRate = (Integer)fpsComboBox.getSelectedItem();
-                Main.runVisualizer(mixerInfo, frameRate);
+                ComboBoxOption option = (ComboBoxOption) viewTypeComboBox.getSelectedItem();
+                Main.runVisualizer(mixerInfo, frameRate, option.getOption(), mirrorRadioButton.isSelected());
             } else {
                 Main.stopVisualizer();
             }

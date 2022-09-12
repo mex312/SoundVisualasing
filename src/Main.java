@@ -14,9 +14,9 @@ public class Main {
     public static Visualizer visualizer;
     private static JFrame frame;
 
-    public static void runVisualizer(Mixer.Info mixerInfo, int frameRate){
+    public static void runVisualizer(Mixer.Info mixerInfo, int frameRate, String option, boolean mirror){
         try {
-            visualizer = new Visualizer(mixerInfo, frameRate);
+            visualizer = new Visualizer(mixerInfo, frameRate, option, mirror);
 
             frame = new JFrame();
             frame.add(visualizer);
