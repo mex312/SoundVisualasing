@@ -14,7 +14,15 @@ public class Main {
     public static Visualizer visualizer;
     private static JFrame frame;
 
-    public static void runVisualizer(Mixer.Info mixerInfo, int frameRate, String option, boolean mirror){
+    public static void controlVisualizer(Mixer.Info mixerInfo, int frameRate, String option, boolean mirror) {
+        if(!isVisualizerRunning) {
+            runVisualizer(mixerInfo, frameRate, option, mirror);
+        } else {
+            stopVisualizer();
+        }
+    }
+
+    private static void runVisualizer(Mixer.Info mixerInfo, int frameRate, String option, boolean mirror){
         try {
             visualizer = new Visualizer(mixerInfo, frameRate, option, mirror);
 
@@ -38,7 +46,7 @@ public class Main {
         }
     }
 
-    public static void stopVisualizer(){
+    private static void stopVisualizer(){
         if(visualizer != null) {
             visualizer.stop();
             visualizer = null;
@@ -48,6 +56,7 @@ public class Main {
             frame.removeAll();
             frame = null;
         }
+
         launcher.onVisualizerStop();
         isVisualizerRunning = false;
     }

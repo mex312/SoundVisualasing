@@ -14,6 +14,7 @@ public class Visualizer extends JComponent{
     private final Timer fourierDrawer;
     private final TargetDataLine targetDataLine;
     private final double maxNote;
+    private final double progressStep;
     private final int freqStep;
     private final boolean mirror;
     private final String option;
@@ -117,6 +118,7 @@ public class Visualizer extends JComponent{
         this.option = option;
         this.mirror = mirror;
 
+        progressStep = 1.0 / (double)wave.length;
         maxNote = getNote(Main.FORMAT.getSampleRate());
         freqStep = (int)Main.FORMAT.getSampleRate() / fourierSampleSize;
 
@@ -167,6 +169,7 @@ public class Visualizer extends JComponent{
 
     private void drawNotes(Graphics2D g2){
         int x = 0;
+        double waveMultiplier = (double)getHeight() / 1000.0;
         for (int i = 0; i < wave.length; i++) {
             double note = getNote(i * 2 * freqStep);
             int nextX = (int)(getNote((i+1) * 2 * freqStep) / maxNote * getWidth());
@@ -177,9 +180,9 @@ public class Visualizer extends JComponent{
 
             g2.setColor(color);
             if(mirror)
-                g2.fillRect(x, getHeight() / 2 - (int)(wave[i] * ((double)getHeight() / 1000)), nextX - x, (int)(wave[i] * ((double)getHeight() / 500)));
+                g2.fillRect(x, getHeight() / 2 - (int)(wave[i] * waveMultiplier), nextX - x, (int)(wave[i] * waveMultiplier * 2));
             else
-                g2.fillRect(x, getHeight() - (int)(wave[i] * ((double)getHeight() / 1000)), nextX - x, (int)(wave[i] * ((double)getHeight() / 1000)));
+                g2.fillRect(x, getHeight() - (int)(wave[i] * waveMultiplier), nextX - x, (int)(wave[i] * waveMultiplier));
 
             x = nextX;
         }
@@ -187,8 +190,8 @@ public class Visualizer extends JComponent{
 
      private void drawFreq(Graphics2D g2){
          int x = 0;
-         double progressStep = 1.0 / (double)wave.length;
          double progress = 0;
+         double waveMultiplier = (double)getHeight() / 1000.0;
          for(int i = 0; i < wave.length; i++) {
              int nextX = (int)((double)(i + 1) / (double)wave.length * getWidth());
 
@@ -196,9 +199,9 @@ public class Visualizer extends JComponent{
 
              g2.setColor(color);
              if(mirror)
-                 g2.fillRect(x, getHeight() / 2 - (int)(wave[i] * ((double)getHeight() / 1000)), nextX - x, (int)(wave[i] * ((double)getHeight() / 500)));
+                 g2.fillRect(x, getHeight() / 2 - (int)(wave[i] * waveMultiplier), nextX - x, (int)(wave[i] * waveMultiplier * 2));
              else
-                 g2.fillRect(x, getHeight() - (int)(wave[i] * ((double)getHeight() / 1000)), nextX - x, (int)(wave[i] * ((double)getHeight() / 1000)));
+                 g2.fillRect(x, getHeight() - (int)(wave[i] * waveMultiplier), nextX - x, (int)(wave[i] * waveMultiplier));
 
              x = nextX;
              progress += progressStep;

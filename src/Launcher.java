@@ -28,7 +28,7 @@ public class Launcher extends JFrame {
 
     public Launcher() {
         setContentPane(rootPanel);
-        setPreferredSize(new Dimension(400, 300));
+        //setPreferredSize(new Dimension(400, 300));
         pack();
         setResizable(false);
 
@@ -52,14 +52,10 @@ public class Launcher extends JFrame {
 
         launchButton.addActionListener(action -> {
             //System.out.println(Main.isVisualizerRunning);
-            if(!Main.isVisualizerRunning) {
-                Mixer.Info mixerInfo = ((MixerInfoItem)inputDeviceComboBox.getSelectedItem()).mixerInfo;
-                int frameRate = (Integer)fpsComboBox.getSelectedItem();
-                ComboBoxOption option = (ComboBoxOption) viewTypeComboBox.getSelectedItem();
-                Main.runVisualizer(mixerInfo, frameRate, option.getOption(), mirrorRadioButton.isSelected());
-            } else {
-                Main.stopVisualizer();
-            }
+            Mixer.Info mixerInfo = ((MixerInfoItem)inputDeviceComboBox.getSelectedItem()).mixerInfo;
+            int frameRate = (Integer)fpsComboBox.getSelectedItem();
+            ComboBoxOption option = (ComboBoxOption) viewTypeComboBox.getSelectedItem();
+            Main.controlVisualizer(mixerInfo, frameRate, option.getOption(), mirrorRadioButton.isSelected());
         });
     }
 }
