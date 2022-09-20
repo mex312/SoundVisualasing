@@ -26,7 +26,8 @@ public class Launcher extends JFrame {
         launchButton.setText("Запустить визуализатор");
     }
 
-    public Launcher() {
+    public Launcher(String name) {
+        super(name);
         setContentPane(rootPanel);
         //setPreferredSize(new Dimension(400, 300));
         pack();

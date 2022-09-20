@@ -26,7 +26,7 @@ public class Main {
         try {
             visualizer = new Visualizer(mixerInfo, frameRate, option, mirror);
 
-            frame = new JFrame();
+            frame = new JFrame("Визуализатор звука");
             frame.add(visualizer);
             frame.addWindowListener(new WindowAdapter() {
                 @Override
@@ -62,7 +62,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        launcher = new Launcher();
+        launcher = new Launcher("Лаунчер визуализатора звука");
         launcher.setVisible(true);
         launcher.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
